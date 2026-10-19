@@ -1,0 +1,8 @@
+FROM ubuntu:xenial AS build
+ENV DEBIAN_FRONTEND=noninteractive
+RUN printf '%s\n' 'deb-src http://archive.ubuntu.com/ubuntu xenial universe' > /etc/apt/sources.list.d/nam-source.list \
+    && apt-get update && apt-get build-dep -y --no-install-recommends nam
+COPY build-nam.sh /build-nam.sh
+RUN sh /build-nam.sh
+FROM scratch
+COPY --from=build /usr/local/bin/nam /nam
