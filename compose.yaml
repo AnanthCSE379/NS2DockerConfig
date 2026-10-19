@@ -1,0 +1,17 @@
+name: cn-lab
+services:
+  lab:
+    build: ./docker-lab
+    platform: linux/amd64
+    ports:
+      - "127.0.0.1:6080:6080"
+    volumes:
+      - .:/work
+    shm_size: 256mb
+    init: true
+    healthcheck:
+      test: ["CMD-SHELL", "xdpyinfo -display :1 >/dev/null 2>&1 && python -c \"import urllib2; urllib2.urlopen('http://localhost:6080/vnc.html')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s

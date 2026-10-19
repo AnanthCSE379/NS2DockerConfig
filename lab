@@ -1,0 +1,22 @@
+#!/bin/bash
+set -euo pipefail
+cd "$(dirname "$0")"
+case "${1:-start}" in
+  start)
+    docker compose up -d --build --wait
+    echo 'Desktop: http://localhost:6080/vnc.html?autoconnect=true&resize=scale'
+    ;;
+  shell)
+    docker compose exec --user student lab bash
+    ;;
+  ns|nam|xgraph)
+    docker compose exec --user student lab "$@"
+    ;;
+  stop)
+    docker compose stop
+    ;;
+  *)
+    echo 'Usage: ./lab {start|shell|ns FILE.tcl|nam FILE.nam|xgraph FILE...|stop}' >&2
+    exit 2
+    ;;
+esac
